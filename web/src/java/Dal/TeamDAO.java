@@ -7,11 +7,15 @@ import java.util.List;
 
 public class TeamDAO {
 
+    
     private final Connection connection;
 
     public TeamDAO(Connection connection) {
         this.connection = connection;
     }
+
+   
+
 
     private Team mapResultSetToTeam(ResultSet rs) throws SQLException {
         return new Team(
@@ -26,16 +30,28 @@ public class TeamDAO {
 
     public List<Team> getAllTeams() {
         List<Team> list = new ArrayList<>();
-        String sql = "SELECT * FROM Teams ORDER BY TeamName";
+        String sql = "SELECT * FROM Teams";
+
         try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             ResultSet rs = ps.executeQuery();)
+             {
+
             while (rs.next()) {
-                list.add(mapResultSetToTeam(rs));
+                Team t = new Team();
+                t.setTeamID(rs.getInt("TeamID"));
+                t.setTeamName(rs.getString("TeamName"));
+                t.setCoach(rs.getString("Coach"));
+                t.setStadium(rs.getString("Stadium"));
+                t.setFoundedYear(rs.getInt("FoundedYear"));
+                t.setCountry(rs.getString("Country"));
+                list.add(t);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return list;
+
+        return list; // ✅ KHÔNG ĐƯỢC return null
     }
 
     public Team getTeamById(int id) {

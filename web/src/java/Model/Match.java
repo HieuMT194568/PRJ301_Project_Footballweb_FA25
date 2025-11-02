@@ -1,31 +1,50 @@
 package Model;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 public class Match {
 
     private int matchID;
     private int homeTeamID;
     private int awayTeamID;
-    private Timestamp matchDate;
-    private String stadium;
     private int homeScore;
     private int awayScore;
+    private Date matchDate;
+    private String stadium;
 
     public Match() {
     }
 
-    public Match(int matchID, int homeTeamID, int awayTeamID, Timestamp matchDate, String stadium, int homeScore, int awayScore) {
+    private String homeTeamName;
+    private String awayTeamName;
+
+    public String getHomeTeamName() {
+        return homeTeamName;
+    }
+
+    public void setHomeTeamName(String homeTeamName) {
+        this.homeTeamName = homeTeamName;
+    }
+
+    public String getAwayTeamName() {
+        return awayTeamName;
+    }
+
+    public void setAwayTeamName(String awayTeamName) {
+        this.awayTeamName = awayTeamName;
+    }
+
+    public Match(int matchID, int homeTeamID, int awayTeamID, int homeScore, int awayScore, Date matchDate, String stadium) {
         this.matchID = matchID;
         this.homeTeamID = homeTeamID;
         this.awayTeamID = awayTeamID;
-        this.matchDate = matchDate;
-        this.stadium = stadium;
         this.homeScore = homeScore;
         this.awayScore = awayScore;
+        this.matchDate = matchDate;
+        this.stadium = stadium;
     }
 
-    // Getters & Setters
+    // Getters và Setters
     public int getMatchID() {
         return matchID;
     }
@@ -50,22 +69,6 @@ public class Match {
         this.awayTeamID = awayTeamID;
     }
 
-    public Timestamp getMatchDate() {
-        return matchDate;
-    }
-
-    public void setMatchDate(Timestamp matchDate) {
-        this.matchDate = matchDate;
-    }
-
-    public String getStadium() {
-        return stadium;
-    }
-
-    public void setStadium(String stadium) {
-        this.stadium = stadium;
-    }
-
     public int getHomeScore() {
         return homeScore;
     }
@@ -81,4 +84,21 @@ public class Match {
     public void setAwayScore(int awayScore) {
         this.awayScore = awayScore;
     }
+
+    public Date getMatchDate() {
+        return matchDate;
+    }
+
+    public void setMatchDate(Date matchDate) {
+        this.matchDate = matchDate;
+    }
+
+    public String getStadium() {
+        return stadium;
+    }
+
+    public void setStadium(String stadium) {
+        this.stadium = stadium;
+    }
+
 }
