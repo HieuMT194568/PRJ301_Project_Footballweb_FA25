@@ -1,7 +1,7 @@
 ﻿/* ================================================
    PROJECT: FC BAYERN STYLE SPORTS PORTAL
    DATABASE: SQL SERVER (SSMS)
-   AUTHOR: Hieu 👑
+   AUTHOR: Hieu
    ================================================ */
 
 -- Tạo database (nếu chưa có)
