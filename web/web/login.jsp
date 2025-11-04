@@ -28,7 +28,7 @@
         </button>
 
         <p class="text-sm text-center text-gray-500 mt-4">
-            Chưa có tài khoản? <a href="#" class="text-red-600 hover:underline">Đăng ký</a>
+            Chưa có tài khoản? <a href="register.jsp" class="text-red-600 hover:underline">Đăng ký</a>
         </p>
     </form>
 </body>

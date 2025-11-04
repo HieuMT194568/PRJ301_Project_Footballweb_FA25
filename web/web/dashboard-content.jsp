@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <div class="mt-8">
+    <div class= "mt-8">
         <canvas id="winRateChart" height="100"></canvas>
     </div>
 </div>

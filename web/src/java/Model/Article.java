@@ -1,8 +1,13 @@
 package Model;
 
 import java.sql.Timestamp;
+import java.sql.Date;
 
+/**
+ * Lớp này đại diện cho một bài báo (Article) trong cơ sở dữ liệu.
+ */
 public class Article {
+
     private int articleID;
     private String title;
     private String description;
@@ -11,9 +16,11 @@ public class Article {
     private String link;
     private Timestamp createdAt;
 
+    // Constructor rỗng
     public Article() {
     }
 
+    // Constructor đầy đủ tham số
     public Article(int articleID, String title, String description, String imageUrl, String category, String link, Timestamp createdAt) {
         this.articleID = articleID;
         this.title = title;
@@ -24,7 +31,17 @@ public class Article {
         this.createdAt = createdAt;
     }
 
-    // Getters and setters
+    // Constructor không có ID (dùng cho việc INSERT)
+    public Article(String title, String description, String imageUrl, String category, String link, Timestamp createdAt) {
+        this.title = title;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.category = category;
+        this.link = link;
+        this.createdAt = createdAt;
+    }
+
+    // Getters and Setters
     public int getArticleID() {
         return articleID;
     }
@@ -80,4 +97,5 @@ public class Article {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
 }

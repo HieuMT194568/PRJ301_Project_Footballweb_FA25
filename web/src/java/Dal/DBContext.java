@@ -12,7 +12,7 @@ public class DBContext {
      
     private static String serverName = "localhost";
     private static        String portNumber = "1433";
-    private static        String databaseName = "Q3_L1_DB"; // Tên DB đã tạo ở bước 1
+    private static        String databaseName = "BayernPortalDB"; // Tên DB đã tạo ở bước 1
     private static        String USER = "sa"; // User SQL Server
     private static        String PASSWORD = "123"; // Password SQL Server
     private static String URL = "jdbc:sqlserver://" + serverName + ":" + portNumber + 

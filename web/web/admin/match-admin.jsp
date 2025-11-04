@@ -10,7 +10,7 @@
     <div class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold text-red-600">🏟️ Danh sách trận đấu</h1>
-
+            <a href="MatchServlet?action=new" class="bg-green-600 text-white px-4 py-2 rounded-lg">➕ Thêm mới</a>
         </div>
 
         <table class="w-full border border-gray-300 rounded-lg text-center">
@@ -34,7 +34,10 @@
                         <td>${m.awayTeamName}</td>
                         <td>${m.matchDate}</td>
                         <td>${m.stadium}</td>
-                           
+                        <td>
+                            <a href="MatchServlet?action=edit&id=${m.matchID}" class="text-blue-600 hover:underline">✏️</a>
+                            <a href="MatchServlet?action=delete&id=${m.matchID}" class="text-red-600 hover:underline"
+                               onclick="return confirm('Xóa trận này?');">🗑️</a>
                         </td>
                     </tr>
                 </c:forEach>

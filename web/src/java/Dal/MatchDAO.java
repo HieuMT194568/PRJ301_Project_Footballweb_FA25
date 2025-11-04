@@ -24,7 +24,7 @@ public class MatchDAO {
             ps.setInt(2, match.getAwayTeamID());
             ps.setInt(3, match.getHomeScore());
             ps.setInt(4, match.getAwayScore());
-            ps.setDate(5, match.getMatchDate());
+            ps.setTimestamp(5, match.getMatchDate());
             ps.setString(6, match.getStadium());
             ps.executeUpdate();
         }
@@ -32,39 +32,49 @@ public class MatchDAO {
 
     // Lấy toàn bộ trận đấu (join để lấy tên đội)
     
-    public List<Match> getAllMatches() {
-        List<Match> list = new ArrayList<>();
-        String sql = """
-            SELECT m.*, 
-                   th.TeamName AS HomeTeamName, 
-                   ta.TeamName AS AwayTeamName
-            FROM Matches m
-            JOIN Team th ON m.HomeTeamID = th.TeamID
-            JOIN Team ta ON m.AwayTeamID = ta.TeamID
-            ORDER BY m.MatchDate DESC
-        """;
+   public List<Match> getAllMatches() throws SQLException {
+    List<Match> matches = new ArrayList<>();
+    
+    // Câu SQL cũ (có thể là): "SELECT * FROM Matches"
+    // THAY THẾ bằng câu SQL JOIN phức tạp này:
+    String sql = "SELECT " +
+                 "  m.MatchID, m.MatchDate, m.Stadium, m.HomeScore, m.AwayScore, " +
+                 "  ht.TeamName AS HomeTeamName, " + // Lấy tên đội nhà
+                 "  at.TeamName AS AwayTeamName, " + // Lấy tên đội khách
+                 "  m.HomeTeamID, m.AwayTeamID " +    // Vẫn lấy ID nếu cần
+                 "FROM Matches m " +
+                 "JOIN Teams ht ON m.HomeTeamID = ht.TeamID " + // JOIN với bảng Teams (đặt tên là ht)
+                 "JOIN Teams at ON m.AwayTeamID = at.TeamID " + // JOIN với bảng Teams (đặt tên là at)
+                 "ORDER BY m.MatchDate DESC"; // Sắp xếp theo ngày mới nhất
 
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Match m = new Match();
-                m.setMatchID(rs.getInt("MatchID"));
-                m.setHomeTeamID(rs.getInt("HomeTeamID"));
-                m.setAwayTeamID(rs.getInt("AwayTeamID"));
-                m.setMatchDate(rs.getDate("MatchDate"));
-                m.setStadium(rs.getString("Stadium"));
-                m.setHomeScore(rs.getInt("HomeScore"));
-                m.setAwayScore(rs.getInt("AwayScore"));
-                m.setHomeTeamName(rs.getString("HomeTeamName"));
-                m.setAwayTeamName(rs.getString("AwayTeamName"));
-                list.add(m);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    try (PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            Match match = new Match();
+            
+            // Lấy dữ liệu từ ResultSet
+            match.setMatchID(rs.getInt("MatchID"));
+            match.setMatchDate(rs.getTimestamp("MatchDate"));
+            match.setStadium(rs.getString("Stadium"));
+            match.setHomeScore(rs.getInt("HomeScore"));
+            match.setAwayScore(rs.getInt("AwayScore"));
+            match.setHomeTeamID(rs.getInt("HomeTeamID")); // ID đội nhà
+            match.setAwayTeamID(rs.getInt("AwayTeamID")); // ID đội khách
+
+            // --- ĐIỀN DỮ LIỆU CHO 2 TRƯỜNG MỚI ---
+            match.setHomeTeamName(rs.getString("HomeTeamName")); // Tên đội nhà
+            match.setAwayTeamName(rs.getString("AwayTeamName")); // Tên đội khách
+
+            matches.add(match);
         }
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw e; // Ném lỗi để Servlet có thể bắt
     }
+    
+    return matches;
+}
 
     // Lấy 1 trận
     
@@ -88,7 +98,7 @@ public class MatchDAO {
                 m.setMatchID(rs.getInt("MatchID"));
                 m.setHomeTeamID(rs.getInt("HomeTeamID"));
                 m.setAwayTeamID(rs.getInt("AwayTeamID"));
-                m.setMatchDate(rs.getDate("MatchDate"));
+                m.setMatchDate(rs.getTimestamp("MatchDate"));
                 m.setStadium(rs.getString("Stadium"));
                 m.setHomeScore(rs.getInt("HomeScore"));
                 m.setAwayScore(rs.getInt("AwayScore"));
@@ -113,7 +123,7 @@ public class MatchDAO {
             ps.setInt(2, match.getAwayTeamID());
             ps.setInt(3, match.getHomeScore());
             ps.setInt(4, match.getAwayScore());
-            ps.setDate(5, match.getMatchDate());
+            ps.setTimestamp(5, match.getMatchDate());
             ps.setString(6, match.getStadium());
             ps.setInt(7, match.getMatchID());
             ps.executeUpdate();
@@ -152,7 +162,7 @@ public class MatchDAO {
                 match.setHomeTeamName(rs.getString("HomeTeamName"));
                 match.setAwayTeamID(rs.getInt("AwayTeamID"));
                 match.setAwayTeamName(rs.getString("AwayTeamName"));
-                match.setMatchDate(rs.getDate("MatchDate"));
+                match.setMatchDate(rs.getTimestamp("MatchDate"));
                 match.setStadium(rs.getString("Stadium"));
                 match.setHomeScore(rs.getInt("HomeScore"));
                 match.setAwayScore(rs.getInt("AwayScore"));

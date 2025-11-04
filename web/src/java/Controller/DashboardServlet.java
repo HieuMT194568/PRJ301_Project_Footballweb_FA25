@@ -3,6 +3,7 @@ package Controller;
 import Dal.DBContext;
 import Dal.MatchDAO;
 import Dal.TeamDAO;
+import Model.Match;
 import Model.Team;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,16 +17,18 @@ public class DashboardServlet extends HttpServlet {
     private TeamDAO teamDAO;
     private MatchDAO matchDAO;
 
-   @Override
+    @Override
     public void init() throws ServletException {
         try {
             DBContext db = new DBContext();
             matchDAO = new MatchDAO(db.getConnection());
             teamDAO = new TeamDAO(db.getConnection());
         } catch (Exception e) {
-            throw new ServletException("Không thể khởi tạo MatchServlet", e);
+            e.printStackTrace(); // log lỗi
+            throw new ServletException("Không thể khởi tạo DAO", e);
         }
     }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -33,10 +36,10 @@ public class DashboardServlet extends HttpServlet {
         try {
             // ✅ 1. Lấy danh sách đội
             List<Team> teams = teamDAO.getAllTeams();
-
             // ✅ 2. Lấy số lượng đội và trận đấu
             int teamCount = teams.size();
-            int matchCount = matchDAO.getAllMatches().size();
+            List<Match> matches = matchDAO.getAllMatches();
+            int matchCount = matches.size();
 
             // ✅ 3. Tính trung bình tỷ lệ thắng
             double totalWinRate = 0;
@@ -61,4 +64,3 @@ public class DashboardServlet extends HttpServlet {
         }
     }
 }
- 

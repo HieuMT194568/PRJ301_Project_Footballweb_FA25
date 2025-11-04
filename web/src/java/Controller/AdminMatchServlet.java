@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@WebServlet(name = "MatchServlet", urlPatterns = {"/MatchServlet"})
-public class MatchServlet extends HttpServlet {
+@WebServlet(name = "AdminMatchServlet", urlPatterns = {"/AdminMatchServlet"})
+public class AdminMatchServlet extends HttpServlet {
 
     private MatchDAO matchDAO;
     private TeamDAO teamDAO;
@@ -37,17 +37,38 @@ public class MatchServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-       
-                    List<Match> matches;
         try {
-            matches = matchDAO.getAllMatches();
-        
+            switch (action != null ? action : "list") {
+                case "new":
+                    // Lấy danh sách đội để hiển thị trong dropdown
+                    request.setAttribute("teams", teamDAO.getAllTeams());
+                    request.getRequestDispatcher("match-form.jsp").forward(request, response);
+                    break;
+
+                case "edit":
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    Match match = matchDAO.getMatchById(id);
+                    request.setAttribute("match", match);
+                    request.setAttribute("teams", teamDAO.getAllTeams());
+                    request.getRequestDispatcher("match-form.jsp").forward(request, response);
+                    break;
+
+                case "delete":
+                    int delId = Integer.parseInt(request.getParameter("id"));
+                    matchDAO.deleteMatch(delId);
+                    response.sendRedirect("MatchServlet?action=list");
+                    break;
+
+                default:
+                    List<Match> matches = matchDAO.getAllMatches();
                     request.setAttribute("matchList", matches);
                     request.getRequestDispatcher("matches-list.jsp").forward(request, response);
-                    } catch (SQLException ex) {
-            Logger.getLogger(MatchServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(500, e.getMessage());
         }
-                    
     }
 
     @Override
@@ -93,4 +114,7 @@ public class MatchServlet extends HttpServlet {
 
         response.sendRedirect("MatchServlet?action=list");
     }
+
+   
+
 }

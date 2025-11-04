@@ -3,9 +3,11 @@ package Controller;
 import Dal.UserDAO;
 import Model.User;
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 
+@WebServlet(name = "AuthServlet", urlPatterns = {"/AuthServlet"})
 public class AuthServlet extends HttpServlet {
     private UserDAO userDAO = new UserDAO();
 

@@ -66,7 +66,7 @@
 <script>
     // Lấy dữ liệu từ JSP để truyền vào Chart.js
     const teamNames = [
-        <% for (Team t : teamList) { %>
+        <%  for (Team t : teamList) { %>
             "<%= t.getTeamName() %>",
         <% } %>
     ];

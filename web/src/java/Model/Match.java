@@ -1,7 +1,6 @@
 package Model;
 
-import java.sql.Date;
-
+import java.sql.Timestamp;
 public class Match {
 
     private int matchID;
@@ -9,7 +8,7 @@ public class Match {
     private int awayTeamID;
     private int homeScore;
     private int awayScore;
-    private Date matchDate;
+    private Timestamp matchDate;
     private String stadium;
 
     public Match() {
@@ -34,7 +33,7 @@ public class Match {
         this.awayTeamName = awayTeamName;
     }
 
-    public Match(int matchID, int homeTeamID, int awayTeamID, int homeScore, int awayScore, Date matchDate, String stadium) {
+    public Match(int matchID, int homeTeamID, int awayTeamID, int homeScore, int awayScore, Timestamp matchDate, String stadium) {
         this.matchID = matchID;
         this.homeTeamID = homeTeamID;
         this.awayTeamID = awayTeamID;
@@ -85,11 +84,11 @@ public class Match {
         this.awayScore = awayScore;
     }
 
-    public Date getMatchDate() {
+    public Timestamp getMatchDate() {
         return matchDate;
     }
 
-    public void setMatchDate(Date matchDate) {
+    public void setMatchDate(Timestamp matchDate) {
         this.matchDate = matchDate;
     }
 
