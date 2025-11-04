@@ -64,5 +64,23 @@
         
     </main>
 
+            
+       <div class="grid grid-cols-4 gap-6">
+  <c:forEach var="p" items="${productList}">
+    <div class="bg-white rounded-xl shadow p-4 hover:shadow-lg transition">
+      <img src="${p.imageUrl}" class="h-48 w-full object-cover rounded-md mb-3">
+      <h3 class="text-lg font-semibold">${p.productName}</h3>
+      <p class="text-gray-600">${p.category}</p>
+      <p class="text-red-600 font-bold mt-2">${p.price} đ</p>
+      <a href="CartServlet?action=add&id=${p.productID}" 
+         class="block bg-red-600 text-white text-center mt-3 py-2 rounded-lg hover:bg-red-700 transition">
+         🛒 Thêm vào giỏ
+      </a>
+    </div>
+  </c:forEach>
+</div>
+         
+            
+            
 </body>
 </html>
