@@ -59,7 +59,7 @@
         </table>
 
         <div class="mt-6 text-center">
-            <a href="admin_dashboard.jsp" class="text-gray-600 hover:underline">⬅ Quay lại Dashboard</a>
+            <a href="${pageContext.request.contextPath}/admin" class="text-gray-600 hover:underline">⬅ Quay lại Dashboard</a>
         </div>
     </div>
 
