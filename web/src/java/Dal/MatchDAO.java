@@ -61,8 +61,6 @@ public class MatchDAO {
             match.setAwayScore(rs.getInt("AwayScore"));
             match.setHomeTeamID(rs.getInt("HomeTeamID")); // ID đội nhà
             match.setAwayTeamID(rs.getInt("AwayTeamID")); // ID đội khách
-
-            // --- ĐIỀN DỮ LIỆU CHO 2 TRƯỜNG MỚI ---
             match.setHomeTeamName(rs.getString("HomeTeamName")); // Tên đội nhà
             match.setAwayTeamName(rs.getString("AwayTeamName")); // Tên đội khách
 

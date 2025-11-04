@@ -13,7 +13,25 @@ import java.util.logging.Logger;
 
 @WebServlet(name = "LoginServlet", urlPatterns = {"/LoginServlet"})
 public class LoginServlet extends HttpServlet {
+    
 
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            User user = (User) session.getAttribute("user");
+
+            if (user != null) {          
+            }
+
+            session.invalidate();
+        }
+
+        response.sendRedirect("articles");
+    }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -31,8 +49,7 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-
-            if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+         if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                 response.sendRedirect(request.getContextPath() + "/admin");
             } else {
                response.sendRedirect(request.getContextPath() + "/articles");
