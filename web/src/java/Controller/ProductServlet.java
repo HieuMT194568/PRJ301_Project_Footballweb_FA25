@@ -1,123 +1,98 @@
 package Controller;
 
-import Model.Product;
 import Dal.ProductDAO;
-import jakarta.servlet.ServletException;
+import Model.Product;
+import Dal.DBContext; //
+import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet(name = "ProductServlet", urlPatterns = {"/ProductServlet"})
 public class ProductServlet extends HttpServlet {
-
-    private ProductDAO productDAO;
-
-    @Override
-    public void init() throws ServletException {
-        productDAO = new ProductDAO();
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
         String action = request.getParameter("action");
-        if (action == null) {
-            action = "list";
-        }
+        if (action == null) action = "list";
 
-        try {
+        try (Connection conn = new DBContext().getConnection()) {
+            ProductDAO dao = new ProductDAO();
+
             switch (action) {
                 case "new":
-                    showNewForm(request, response);
+                    // 👉 Tới form thêm sản phẩm
+                    request.getRequestDispatcher("admin/product_form.jsp").forward(request, response);
                     break;
 
                 case "edit":
-                    showEditForm(request, response);
+                    // 👉 Tới form cập nhật sản phẩm
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    Product existing = dao.getProductById(id);
+                    request.setAttribute("product", existing);
+                    request.getRequestDispatcher("admin/product_form.jsp").forward(request, response);
                     break;
 
                 case "delete":
-                    deleteProduct(request, response);
+                    // 👉 Xóa sản phẩm rồi quay lại danh sách
+                    int deleteId = Integer.parseInt(request.getParameter("id"));
+                    dao.deleteProduct(deleteId);
+                    response.sendRedirect("ProductServlet?action=list");
                     break;
 
                 case "list":
                 default:
-                    listProducts(request, response);
+                    // 👉 Hiển thị danh sách sản phẩm
+                    List<Product> list = dao.getAllProducts();
+                    request.setAttribute("productList", list);
+                    request.getRequestDispatcher("admin/product_list.jsp").forward(request, response);
                     break;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Lỗi khi xử lý yêu cầu: " + e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+        } catch (SQLException e) {
+            throw new ServletException("Database error: " + e.getMessage(), e);
         }
     }
 
-    // 🟢 Thêm sản phẩm mới
-    private void insertProduct(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        Product p = new Product();
-        p.setProductName(request.getParameter("productName"));
-        p.setDescription(request.getParameter("description"));
-        p.setPrice(Double.parseDouble(request.getParameter("price")));
-        p.setStockQuantity(Integer.parseInt(request.getParameter("stockQuantity")));
-        p.setCategory(request.getParameter("category"));
-        p.setImageUrl(request.getParameter("imageUrl"));
-
-        productDAO.insert(p);
-        response.sendRedirect("ProductServlet?action=list");
-    }
-
-    // 🟠 Cập nhật sản phẩm
-    private void updateProduct(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        Product p = new Product();
-        p.setProductID(Integer.parseInt(request.getParameter("productID")));
-        p.setProductName(request.getParameter("productName"));
-        p.setDescription(request.getParameter("description"));
-        p.setPrice(Double.parseDouble(request.getParameter("price")));
-        p.setStockQuantity(Integer.parseInt(request.getParameter("stockQuantity")));
-        p.setCategory(request.getParameter("category"));
-        p.setImageUrl(request.getParameter("imageUrl"));
-
-        productDAO.update(p);
-        response.sendRedirect("ProductServlet?action=list");
-    }
-
-    // 🔴 Xóa sản phẩm
-    private void deleteProduct(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        int id = Integer.parseInt(request.getParameter("id"));
-        productDAO.delete(id);
-        response.sendRedirect("ProductServlet?action=list");
-    }
-
-    private void listProducts(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        var productList = productDAO.getAllProducts();
-        request.setAttribute("productList", productList);
-        request.getRequestDispatcher("admin/product_list.jsp").forward(request, response);
-    }
-
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("admin/product_list.jsp").forward(request, response);
-    }
 
-// 🔵 Hiển thị form chỉnh sửa
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+        request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
 
-        int id = Integer.parseInt(request.getParameter("id"));
-        var product = productDAO.getById(id);
-        request.setAttribute("product", product);
-        request.getRequestDispatcher("admin/product_list.jsp").forward(request, response);
+        try (Connection conn = new DBContext().getConnection()) {
+            ProductDAO dao = new ProductDAO();
+
+            // 👉 Lấy dữ liệu từ form
+            String name = request.getParameter("productName");
+            String desc = request.getParameter("description");
+            double price = Double.parseDouble(request.getParameter("price"));
+            int stock = Integer.parseInt(request.getParameter("stockQuantity"));
+            String image = request.getParameter("imageUrl");
+            String category = request.getParameter("category");
+
+            if ("insert".equals(action)) {
+                // ➕ Thêm mới
+                Product p = new Product(0, name, desc, price, stock, image, category);
+                dao.addProduct(p);
+
+            } else if ("update".equals(action)) {
+                // ✏️ Cập nhật
+                int id = Integer.parseInt(request.getParameter("productID"));
+                Product p = new Product(id, name, desc, price, stock, image, category);
+                dao.updateProduct(p);
+            }
+
+            response.sendRedirect("ProductServlet?action=list");
+
+        } catch (SQLException e) {
+            throw new ServletException("Database error: " + e.getMessage(), e);
+        }
     }
 }

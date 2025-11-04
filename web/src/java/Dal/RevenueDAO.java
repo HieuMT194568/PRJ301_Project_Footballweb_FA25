@@ -17,6 +17,29 @@ public class RevenueDAO extends DBContext {
         return 0;
     }
 
+    public int getTotalUsers() {
+        String sql = "SELECT COUNT(*) FROM Users";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    } 
+     public int getTotalProducts() {
+        String sql = "SELECT COUNT(*) FROM Products";
+        try (Connection con = getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
     // Doanh thu theo tháng (dùng cho biểu đồ)
     public Map<String, Double> getMonthlyRevenue() {
         Map<String, Double> data = new LinkedHashMap<>();

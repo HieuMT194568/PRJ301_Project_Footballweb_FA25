@@ -1,36 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model;
 
-/**
- *
- * @author HGC
- */
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
 
 public class Order {
 
     private int orderID;
     private int userID;
-    private Date orderDate;
+    private String userName;
     private double totalAmount;
+    private Timestamp orderDate;
     private String status;
-    private List<OrderDetail> details;
 
     public Order() {
     }
 
-    public Order(int orderID, int userID, Date orderDate, double totalAmount, String status) {
+    public Order(int orderID, int userID, String userName, double totalAmount, Timestamp orderDate, String status) {
         this.orderID = orderID;
         this.userID = userID;
-        this.orderDate = orderDate;
+        this.userName = userName;
         this.totalAmount = totalAmount;
+        this.orderDate = orderDate;
         this.status = status;
     }
 
+    // Getters & Setters
     public int getOrderID() {
         return orderID;
     }
@@ -47,12 +40,12 @@ public class Order {
         this.userID = userID;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public double getTotalAmount() {
@@ -63,19 +56,19 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Timestamp orderDate) {
+        this.orderDate = orderDate;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public List<OrderDetail> getDetails() {
-        return details;
-    }
-
-    public void setDetails(List<OrderDetail> details) {
-        this.details = details;
     }
 }

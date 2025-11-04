@@ -1,24 +1,16 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>${pageTitle}</title>
+    <title>⚽ Danh sách trận đấu</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-    </style>
 </head>
 
-<body class="bg-neutral-100 min-h-screen flex flex-col">
 
-    <!-- 🟥 HEADER -->
-    <header class="bg-red-700 text-white shadow-lg z-20">
+<body>
+    
+ <header class="bg-red-700 text-white shadow-lg z-20">
         <div class="flex justify-between items-center h-16 px-6 md:px-8">
             <div class="flex items-center space-x-3">
                 <a href="articles" class="flex items-center space-x-2">
@@ -49,9 +41,7 @@
             </div>
         </div>
     </header>
-
-    <!-- ⚪ NAVBAR -->
-    <nav class="bg-white shadow-md border-b border-gray-200 sticky top-0 z-10">
+     <nav class="bg-white shadow-md border-b border-gray-200 sticky top-0 z-10">
         <div class="flex items-center space-x-8 h-12 px-6 md:px-8">
             <a href="TeamServlet?action=list" class="flex items-center text-gray-700 hover:text-red-600 font-medium transition">
                 👥 <span class="ml-1">Teams</span>
@@ -76,41 +66,40 @@
             </c:if>
         </div>
     </nav>
-
-   
-   
-    <!-- 📰 NEWS SECTION -->
-    <section class="px-6 md:px-8 mb-8">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-3xl font-semibold text-gray-800">Tin Tức Mới Nhất</h2>
-           
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-md">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold text-red-600">⚽ Danh sách trận đấu</h1>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <c:if test="${empty listA}">
-                <p class="text-gray-600 col-span-4">Không có bài báo nào để hiển thị.</p>
-            </c:if>
+        <table class="w-full border border-gray-300 rounded-lg text-center">
+            <thead class="bg-red-600 text-white">
+                <tr>
+                    <th>ID</th>
+                    <th>Đội nhà</th>
+                    <th>Đội khách</th>
+                    <th>Tỷ số</th>
+                    <th>Ngày thi đấu</th>
+                    <th>Sân</th>
 
-            <c:forEach items="${listA}" var="article">
-                <div class="bg-white rounded-xl shadow p-4 hover:shadow-lg transition flex flex-col">
-                    <img src="assets/${article.imageUrl}" alt="${article.title}" class="h-48 w-full object-cover rounded-md mb-3">
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="m" items="${matchList}">
+                    <tr class="border-b hover:bg-gray-50">
+                        <td>${m.matchID}</td>
+                        <td>${m.homeTeamName}</td>
+                        <td>${m.awayTeamName}</td>
+                        <td>${m.homeScore} - ${m.awayScore}</td>
+                        <td>${m.matchDate}</td>
+                        <td>${m.stadium}</td>                        
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
 
-                    <div class="text-sm text-gray-500 mb-2">
-                        <strong class="text-red-700">${article.category}</strong> | 
-                        <span><fmt:formatDate value="${article.createdAt}" pattern="dd/MM/yyyy" /></span>
-                    </div>
-
-                    <h3 class="text-lg font-semibold text-gray-900 leading-tight">${article.title}</h3>
-                    <p class="text-sm text-gray-600 mt-2 mb-3 flex-1">${article.description}</p>
-
-                    <a href="${article.link}" target="_blank"
-                       class="block bg-gray-800 text-white text-center mt-auto py-2 rounded-lg hover:bg-gray-900 transition font-medium">
-                        Đọc thêm
-                    </a>
-                </div>
-            </c:forEach>
+        <div class="text-center mt-6">
+            <a href="../" class="text-gray-600 hover:underline">⬅ Quay lại</a>
         </div>
-    </section>
-
+    </div>
 </body>
 </html>

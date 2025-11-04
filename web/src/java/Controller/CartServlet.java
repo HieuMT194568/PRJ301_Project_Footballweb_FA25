@@ -7,7 +7,10 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "CartServlet", urlPatterns = {"/CartServlet"})
 public class CartServlet extends HttpServlet {
@@ -32,14 +35,15 @@ public class CartServlet extends HttpServlet {
         switch (action) {
             case "add":
                 int productId = Integer.parseInt(request.getParameter("id"));
-                Product p = productDAO.getById(productId);
+                Product p = null;
+                p = productDAO.getProductById(productId);
                 if (p != null) {
                     CartItem item = cart.getOrDefault(productId, new CartItem(p, 0));
                     item.setQuantity(item.getQuantity() + 1);
                     cart.put(productId, item);
                 }
                 session.setAttribute("cart", cart);
-                response.sendRedirect("CartServlet?action=view");
+                response.sendRedirect("shop");
                 break;
 
             case "remove":

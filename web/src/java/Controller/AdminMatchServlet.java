@@ -42,7 +42,7 @@ public class AdminMatchServlet extends HttpServlet {
                 case "new":
                     // Lấy danh sách đội để hiển thị trong dropdown
                     request.setAttribute("teams", teamDAO.getAllTeams());
-                    request.getRequestDispatcher("match-form.jsp").forward(request, response);
+                    request.getRequestDispatcher("match_form.jsp").forward(request, response);
                     break;
 
                 case "edit":
@@ -50,7 +50,7 @@ public class AdminMatchServlet extends HttpServlet {
                     Match match = matchDAO.getMatchById(id);
                     request.setAttribute("match", match);
                     request.setAttribute("teams", teamDAO.getAllTeams());
-                    request.getRequestDispatcher("match-form.jsp").forward(request, response);
+                    request.getRequestDispatcher("match_form.jsp").forward(request, response);
                     break;
 
                 case "delete":
@@ -62,7 +62,7 @@ public class AdminMatchServlet extends HttpServlet {
                 default:
                     List<Match> matches = matchDAO.getAllMatches();
                     request.setAttribute("matchList", matches);
-                    request.getRequestDispatcher("matches-list.jsp").forward(request, response);
+                    request.getRequestDispatcher("admin/match_list.jsp").forward(request, response);
                     break;
             }
         } catch (Exception e) {

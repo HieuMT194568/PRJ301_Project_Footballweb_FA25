@@ -9,7 +9,7 @@
     <div class="bg-white p-8 rounded-xl shadow-lg text-center">
         <h1 class="text-3xl font-bold text-green-600 mb-4">✅ Thanh toán thành công!</h1>
         <p>${message}</p>
-        <a href="ProductServlet?action=list" class="mt-6 inline-block bg-red-600 text-white px-4 py-2 rounded-lg">🛍️ Tiếp tục mua hàng</a>
+        <a href="shop" class="mt-6 inline-block bg-red-600 text-white px-4 py-2 rounded-lg">🛍️ Tiếp tục mua hàng</a>
     </div>
 </body>
 </html>

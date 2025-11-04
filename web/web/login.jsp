@@ -6,7 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex justify-center items-center h-screen">
-    <form action="LoginServlet" method="post" 
+    <form action="${pageContext.request.contextPath}/LoginServlet" method="post" 
           class="bg-white p-8 rounded-lg shadow-lg w-96">
         <h1 class="text-2xl font-bold text-center text-red-600 mb-6">🔐 Đăng nhập</h1>
 

@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Servlet này xử lý các yêu cầu liên quan đến bài báo,
  * ví dụ: hiển thị danh sách bài báo.
  */
-@WebServlet(name = "articles", urlPatterns = {"/articles"})
+@WebServlet(name = "ArticlesServlet", urlPatterns = {"/articles"})
 public class ArticleServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

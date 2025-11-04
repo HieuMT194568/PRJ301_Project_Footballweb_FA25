@@ -1,5 +1,6 @@
 package Dal;
 
+import static Dal.DBContext.getConnection;
 import java.sql.*;
 import java.util.*;
 import Model.Product;
@@ -30,7 +31,7 @@ public class ProductDAO extends DBContext {
         return list;
     }
 
-    public void insert(Product p) {
+    public void addProduct(Product p) {
         String sql = "INSERT INTO Products (ProductName, Description, Price, StockQuantity, ImageUrl, Category) VALUES (?,?,?,?,?,?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -46,7 +47,7 @@ public class ProductDAO extends DBContext {
         }
     }
 
-    public void update(Product p) {
+    public void updateProduct(Product p) {
         String sql = "UPDATE Products SET ProductName=?, Description=?, Price=?, StockQuantity=?, ImageUrl=?, Category=? WHERE ProductID=?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -63,7 +64,7 @@ public class ProductDAO extends DBContext {
         }
     }
 
-    public void delete(int id) {
+    public void deleteProduct(int id) {
         String sql = "DELETE FROM Products WHERE ProductID=?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -74,7 +75,7 @@ public class ProductDAO extends DBContext {
         }
     }
 
-    public Product getById(int id) {
+    public Product getProductById(int id) {
         String sql = "SELECT * FROM Products WHERE ProductID=?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
