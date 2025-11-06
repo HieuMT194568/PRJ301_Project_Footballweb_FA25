@@ -32,7 +32,6 @@
                     <table class="w-full border border-gray-300 rounded-lg overflow-hidden text-center">
                         <thead class="bg-red-600 text-white">
                             <tr>
-                                <th class="py-3 px-2">ID</th>
                                 <th class="py-3 px-2">Tên sản phẩm</th>
                                 <th class="py-3 px-2">Giá</th>
                                 <th class="py-3 px-2">Tồn kho</th>
@@ -43,7 +42,6 @@
                         <tbody>
                             <c:forEach var="p" items="${productList}">
                                 <tr class="border-b hover:bg-gray-50 transition">
-                                    <td class="py-2">${p.productID}</td>
                                     <td class="py-2 font-medium text-gray-800">${p.productName}</td>
                                     <td class="py-2 text-red-600 font-semibold">${p.price} đ</td>
                                     <td class="py-2">${p.stockQuantity}</td>
@@ -67,7 +65,7 @@
 
         <!-- Footer -->
         <div class="text-center mt-6">
-            <a href="${pageContext.request.contextPath}/admin/admin_dashboard.jsp"
+            <a href="${pageContext.request.contextPath}/admin"
                class="text-gray-600 hover:text-red-700 font-medium transition">
                ⬅ Quay lại Dashboard
             </a>

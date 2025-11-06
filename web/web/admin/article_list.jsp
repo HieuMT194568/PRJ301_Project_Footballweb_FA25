@@ -22,7 +22,6 @@
         <table class="w-full border border-gray-300 rounded-lg text-left">
             <thead class="bg-red-600 text-white">
                 <tr>
-                    <th class="py-2 px-3">ID</th>
                     <th class="py-2 px-3">Tiêu đề</th>
                     <th class="py-2 px-3">Danh mục</th>
                     <th class="py-2 px-3">Ngày tạo</th>
@@ -33,7 +32,7 @@
             <tbody>
                 <c:forEach var="a" items="${articleList}">
                     <tr class="border-b hover:bg-gray-50 transition">
-                        <td class="py-2 px-3">${a.articleID}</td>
+  
                         <td class="py-2 px-3 font-semibold text-gray-800">${a.title}</td>
                         <td class="py-2 px-3 text-gray-700">${a.category}</td>
                         <td class="py-2 px-3 text-gray-600">

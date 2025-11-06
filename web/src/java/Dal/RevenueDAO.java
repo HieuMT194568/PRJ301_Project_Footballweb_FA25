@@ -61,26 +61,7 @@ public class RevenueDAO extends DBContext {
         return data;
     }
 
-    // Top 5 sản phẩm bán chạy
-    public Map<String, Integer> getTopProducts() {
-        Map<String, Integer> data = new LinkedHashMap<>();
-        String sql = """
-            SELECT TOP 5 P.ProductName, SUM(OD.Quantity) AS Sold
-            FROM OrderDetails OD
-            JOIN Products P ON OD.ProductID = P.ProductID
-            GROUP BY P.ProductName
-            ORDER BY Sold DESC
-        """;
-        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                data.put(rs.getString("ProductName"), rs.getInt("Sold"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return data;
-    }
+  
 
     // Tổng số đơn hàng trong tháng
     public int getOrdersThisMonth() {

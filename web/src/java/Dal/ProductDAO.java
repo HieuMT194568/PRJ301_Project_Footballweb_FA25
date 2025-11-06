@@ -10,19 +10,17 @@ public class ProductDAO extends DBContext {
     public List<Product> getAllProducts() {
         List<Product> list = new ArrayList<>();
         String sql = "SELECT * FROM Products";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 list.add(new Product(
-                    rs.getInt("ProductID"),
-                    rs.getString("ProductName"),
-                    rs.getString("Description"),
-                    rs.getDouble("Price"),
-                    rs.getInt("StockQuantity"),
-                    rs.getString("ImageUrl"),
-                    rs.getString("Category")
+                        rs.getInt("ProductID"),
+                        rs.getString("ProductName"),
+                        rs.getString("Description"),
+                        rs.getDouble("Price"),
+                        rs.getInt("StockQuantity"),
+                        rs.getString("ImageUrl"),
+                        rs.getString("Category")
                 ));
             }
         } catch (Exception e) {
@@ -31,10 +29,21 @@ public class ProductDAO extends DBContext {
         return list;
     }
 
+    public void updateStockQuantity(int productId, int quantityBought) {
+        String sql = "UPDATE Products SET stockQuantity = stockQuantity - ? WHERE productID = ? AND stockQuantity >= ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql);) {
+            ps.setInt(1, quantityBought);
+            ps.setInt(2, productId);
+            ps.setInt(3, quantityBought);
+            ps.executeUpdate();
+        } catch (SQLException e) {  
+            e.printStackTrace();
+        }
+    }
+
     public void addProduct(Product p) {
         String sql = "INSERT INTO Products (ProductName, Description, Price, StockQuantity, ImageUrl, Category) VALUES (?,?,?,?,?,?)";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, p.getProductName());
             ps.setString(2, p.getDescription());
             ps.setDouble(3, p.getPrice());
@@ -49,8 +58,7 @@ public class ProductDAO extends DBContext {
 
     public void updateProduct(Product p) {
         String sql = "UPDATE Products SET ProductName=?, Description=?, Price=?, StockQuantity=?, ImageUrl=?, Category=? WHERE ProductID=?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, p.getProductName());
             ps.setString(2, p.getDescription());
             ps.setDouble(3, p.getPrice());
@@ -66,8 +74,7 @@ public class ProductDAO extends DBContext {
 
     public void deleteProduct(int id) {
         String sql = "DELETE FROM Products WHERE ProductID=?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (Exception e) {
@@ -77,19 +84,18 @@ public class ProductDAO extends DBContext {
 
     public Product getProductById(int id) {
         String sql = "SELECT * FROM Products WHERE ProductID=?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Product(
-                    rs.getInt("ProductID"),
-                    rs.getString("ProductName"),
-                    rs.getString("Description"),
-                    rs.getDouble("Price"),
-                    rs.getInt("StockQuantity"),
-                    rs.getString("ImageUrl"),
-                    rs.getString("Category")
+                        rs.getInt("ProductID"),
+                        rs.getString("ProductName"),
+                        rs.getString("Description"),
+                        rs.getDouble("Price"),
+                        rs.getInt("StockQuantity"),
+                        rs.getString("ImageUrl"),
+                        rs.getString("Category")
                 );
             }
         } catch (Exception e) {
@@ -97,23 +103,11 @@ public class ProductDAO extends DBContext {
         }
         return null;
     }
-    public void updateStockQuantity(int productID, int quantitySold) {
-        String sql = "UPDATE Product SET stockQuantity = stockQuantity - ? WHERE productID = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setInt(1, quantitySold);
-            st.setInt(2, productID);
-            st.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     // ✅ Tăng lại tồn kho (khi hủy đơn)
     public void restoreStockQuantity(int productID, int quantityRestored) {
         String sql = "UPDATE Product SET stockQuantity = stockQuantity + ? WHERE productID = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement st = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, quantityRestored);
             st.setInt(2, productID);
             st.executeUpdate();

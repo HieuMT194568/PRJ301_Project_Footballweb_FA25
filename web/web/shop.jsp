@@ -1,44 +1,60 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>   
-<%-- XÓA DÒNG <%@ include file="layout.jsp" %> KHỎI ĐÂY --%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Shop - FC Bayern Portal</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <header class="bg-red-700 text-white shadow-lg z-20">
-        <div class="flex justify-between items-center h-16 px-6 md:px-8">
+<head>
+    <title>Shop - FC Bayern Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        .card-img-top-fixed {
+            height: 200px; /* Đặt chiều cao cố định cho ảnh */
+            object-fit: cover; /* Đảm bảo ảnh lấp đầy mà không bị méo */
+        }
 
-            <div class="flex items-center space-x-3">
-                <a href="articles" class="flex items-center space-x-2">
-                    <img src="assets/images/bayern-logo.png" class="h-10 w-10 rounded-full shadow-md bg-white p-1">
-                    <h1 class="text-2xl font-bold truncate">FC Bayern Munich</h1>
-                </a>
-            </div>
+        /* CẢI TIẾN 1: Thêm hiệu ứng hover cho Card
+        */
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px); /* Nâng card lên 5px */
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important; /* Thêm bóng đổ lớn hơn */
+        }
+    </style>
+</head>
+<body class="bg-light">
 
-            <div class="flex items-center space-x-4">
+    <header class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="${pageContext.request.contextPath}/articles">
+                <img src="${pageContext.request.contextPath}/assets/images/bayern-logo.png" alt="Logo" style="height: 40px; width: 40px;" class="rounded-circle bg-white p-1 me-2">
+                <span class="fw-bold fs-5">FC Bayern Munich</span>
+            </a>
+
+            <div class="d-flex align-items-center ms-auto">
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">
-                        <span class="hidden md:block font-medium">
+                        <span class="navbar-text me-3 d-none d-md-block">
                             Welcome, ${sessionScope.user.fullName}!
                         </span>
-                        <a href="LogoutServlet" class="bg-white text-red-700 px-3 py-1 rounded-lg font-semibold hover:bg-gray-100">
+                        <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-light text-danger fw-semibold me-2">
                             Logout
                         </a>
                     </c:when>
                     <c:otherwise>
-                        <a href="login.jsp" class="bg-white text-red-700 px-3 py-1 rounded-lg font-semibold hover:bg-gray-100">
+                        <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-light text-danger fw-semibold me-2">
                             Login
                         </a>
                     </c:otherwise>
                 </c:choose>
 
-                <a href="CartServlet?action=view" class="relative bg-white text-red-700 px-3 py-1 rounded-lg font-semibold hover:bg-gray-100">
+                <a href="${pageContext.request.contextPath}/CartServlet?action=view" class="btn btn-light text-danger fw-semibold position-relative">
                     🛒
                     <c:if test="${not empty sessionScope.cart}">
-                        <span class="absolute -top-2 -right-2 bg-yellow-400 text-xs text-black px-2 rounded-full">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
                             ${sessionScope.cart.size()}
                         </span>
                     </c:if>
@@ -46,55 +62,66 @@
             </div>
         </div>
     </header>
-    <body class="bg-gray-100">
-        <nav class="bg-white shadow-md border-b border-gray-200 sticky top-0 z-10">
-            <div class="flex items-center space-x-8 h-12 px-6 md:px-8">
-                <a href="TeamServlet?action=list" class="flex items-center text-gray-700 hover:text-red-600 font-medium transition">
-                    👥 <span class="ml-1">Teams</span>
-                </a>
 
-                <a href="MatchServlet?action=list" class="flex items-center text-gray-700 hover:text-red-600 font-medium transition">
-                    ⚽ <span class="ml-1">Matches</span>
-                </a>
-
-                <a href="articles" class="flex items-center text-gray-700 hover:text-red-600 font-medium transition">
-                    📰 <span class="ml-1">News</span>
-                </a>
-
-                <a href="shop" class="flex items-center text-gray-700 hover:text-red-600 font-medium transition">
-                    🛍️ <span class="ml-1">Shop</span>
-                </a>
-
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom sticky-top">
+        <div class="container-fluid">
+            <div class="navbar-nav">
+                <a class="nav-link" href="${pageContext.request.contextPath}/TeamServlet?action=list">👥 Teams</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/MatchServlet?action=list">⚽ Matches</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/articles">📰 News</a>
+                <a class="nav-link active fw-bold text-danger" href="${pageContext.request.contextPath}/shop">🛍️ Shop</a>
+                
                 <c:if test="${sessionScope.user != null && sessionScope.user.role == 'ADMIN'}">
-                    <a href="admin" class="flex items-center text-gray-700 hover:text-red-600 font-medium transition">
-                        ⚙️ <span class="ml-1">Admin Panel</span>
-                    </a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/admin">⚙️ Admin Panel</a>
                 </c:if>
             </div>
-        </nav>
+        </div>
+    </nav>
 
+    <main class="container my-5">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <c:forEach var="p" items="${productList}">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <img src="${pageContext.request.contextPath}/assets/${p.imageUrl}" class="card-img-top card-img-top-fixed" alt="${p.productName}">
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark text-truncate" title="${p.productName}">
+                                ${p.productName}
+                            </h5>
+                            <p class="card-text text-muted small">${p.category}</p>
+                            
+                            <p class="card-text fs-5 fw-semibold text-danger mb-2">
+                                <fmt:formatNumber value="${p.price}" pattern="#,##0" /> ₫
+                            </p>
 
-        <main class="max-w-6xl mx-auto py-10 px-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                <c:forEach var="p" items="${productList}">
-                    <div class="bg-white rounded-xl shadow hover:shadow-lg transform hover:-translate-y-1 transition p-4">
-                        <img src="assets/${p.imageUrl}" alt="${p.productName}" class="h-48 w-full object-cover rounded-md mb-4">
-                        <h2 class="font-bold text-lg text-gray-800">${p.productName}</h2>
-                        <p class="text-gray-500 text-sm mb-2">${p.category}</p>
-                        <p class="text-red-600 font-semibold text-lg">
-                            <fmt:formatNumber value="${p.price}" pattern="#,##0" /> ₫
-                        </p>
-                        <a href="CartServlet?action=add&id=${p.productID}"
-                           class="block text-center mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
-                            🛒 Thêm vào giỏ
-                        </a>
+                            <div class="mt-auto">
+                                <c:choose>
+                                    <c:when test="${p.stockQuantity > 0}">
+                                        <p class="text-success small mb-2">Còn lại: ${p.stockQuantity}</p>
+                                        <a href="${pageContext.request.contextPath}/CartServlet?action=add&id=${p.productID}"
+                                           class="btn btn-danger w-100 fw-medium">
+                                           🛒 Thêm vào giỏ
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p class="text-danger small fw-semibold mb-2">❌ Hết hàng</p>
+                                        <button class="btn btn-secondary w-100" disabled>
+                                            Hết hàng
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
                     </div>
-                </c:forEach>
-            </div>
-        </main>
+                </div>
+            </c:forEach>
+        </div>
+    </main>
 
-        <footer class="text-center py-4 text-gray-600 border-t">
-            © 2025 Bayern Munich. All rights reserved.
-        </footer>
-    </body>
+    <footer class="text-center py-4 text-muted border-top mt-5">
+        © 2025 Bayern Munich. All rights reserved.
+    </footer>
+    
+</body>
 </html>

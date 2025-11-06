@@ -53,7 +53,7 @@ public class CheckoutServlet extends HttpServlet {
 
             // 3️⃣ Trừ stock
             int newStock = item.getProduct().getStockQuantity() - item.getQuantity();
-            productDAO.updateStockQuantity(item.getProduct().getProductID(), newStock);
+            productDAO.updateStockQuantity(item.getProduct().getProductID(), item.getQuantity());
         }
 
         // 4️⃣ Xóa giỏ

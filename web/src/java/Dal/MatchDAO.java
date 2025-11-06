@@ -76,38 +76,39 @@ public class MatchDAO {
 
     // Lấy 1 trận
     
-    public Match getMatchById(int id) {
-        Match m = null;
-        String sql = """
-            SELECT m.*, 
-                   th.TeamName AS HomeTeamName, 
-                   ta.TeamName AS AwayTeamName
-            FROM Matches m
-            JOIN Team th ON m.HomeTeamID = th.TeamID
-            JOIN Team ta ON m.AwayTeamID = ta.TeamID
-            WHERE m.MatchID = ?
-        """;
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                m = new Match();
-                m.setMatchID(rs.getInt("MatchID"));
-                m.setHomeTeamID(rs.getInt("HomeTeamID"));
-                m.setAwayTeamID(rs.getInt("AwayTeamID"));
-                m.setMatchDate(rs.getTimestamp("MatchDate"));
-                m.setStadium(rs.getString("Stadium"));
-                m.setHomeScore(rs.getInt("HomeScore"));
-                m.setAwayScore(rs.getInt("AwayScore"));
-                m.setHomeTeamName(rs.getString("HomeTeamName"));
-                m.setAwayTeamName(rs.getString("AwayTeamName"));
+        public Match getMatchById(int id) {
+            Match m = null;
+            String sql = """
+                SELECT m.*, 
+                       th.TeamName AS HomeTeamName, 
+                       ta.TeamName AS AwayTeamName
+                FROM Matches m
+                JOIN Teams th ON m.HomeTeamID = th.TeamID
+                JOIN Teams ta ON m.AwayTeamID = ta.TeamID
+                WHERE m.MatchID = ?
+            """;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    m = new Match();
+                    m.setMatchID(rs.getInt("MatchID"));
+                    m.setHomeTeamID(rs.getInt("HomeTeamID"));
+                    m.setAwayTeamID(rs.getInt("AwayTeamID"));
+                    m.setMatchDate(rs.getTimestamp("MatchDate"));
+                    m.setStadium(rs.getString("Stadium"));
+                    m.setHomeScore(rs.getInt("HomeScore"));
+                    m.setAwayScore(rs.getInt("AwayScore"));
+                    m.setHomeTeamName(rs.getString("HomeTeamName"));
+                    m.setAwayTeamName(rs.getString("AwayTeamName"));
+                      return m;
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
         }
-        return m;
-    }
 
     // Cập nhật
     public void updateMatch(Match match) throws SQLException {
