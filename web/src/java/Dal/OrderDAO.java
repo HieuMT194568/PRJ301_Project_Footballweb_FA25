@@ -139,7 +139,30 @@ public class OrderDAO extends DBContext {
         }
         return null;
     }
+public int insertOrder(Order order, Connection conn) {
+    int orderID = 0;
+    String sql = "INSERT INTO Orders (UserID, TotalAmount, Status) VALUES (?, ?, ?)";
+    
+    // Dùng PreparedStatement.RETURN_GENERATED_KEYS để lấy ID vừa tạo
+    try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        
+        ps.setInt(1, order.getUserID());
+        ps.setDouble(2, order.getTotalAmount());
+        ps.setString(3, order.getStatus());
+        ps.executeUpdate();
 
+        // Lấy OrderID vừa được tạo
+        try (ResultSet rs = ps.getGeneratedKeys()) {
+            if (rs.next()) {
+                orderID = rs.getInt(1);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        // Không đóng connection ở đây!
+    }
+    return orderID;
+}
     public int insertOrder(Order order) {
         String sql = "INSERT INTO Orders (UserID, OrderDate, TotalAmount, Status) VALUES (?, GETDATE(), ?, ?)";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

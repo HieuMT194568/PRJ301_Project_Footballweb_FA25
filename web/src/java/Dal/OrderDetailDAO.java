@@ -7,10 +7,9 @@ import java.util.*;
 
 public class OrderDetailDAO extends DBContext {
 
-    public void insertOrderDetail(OrderDetail detail) {
+    public void insertOrderDetail(OrderDetail detail, Connection conn) {
         String sql = "INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice) VALUES (?, ?, ?, ?)";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, detail.getOrderID());
             ps.setInt(2, detail.getProductID());
             ps.setInt(3, detail.getQuantity());

@@ -5,62 +5,131 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý bài viết</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 Quản lý bài viết</title>
+    
+    <%-- Thêm CSS và JS của Bootstrap 5 --%>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen p-8">
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-red-700">📰 Quản lý bài viết</h1>
-            <a href="AdminArticleServlet?action=new" 
-               class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition">
-                ➕ Thêm bài viết
+    <%-- Header (Giữ nguyên code của bạn) --%>
+    <header class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="${pageContext.request.contextPath}/articles">
+                <img src="${pageContext.request.contextPath}/assets/images/bayern-logo.png" alt="Logo" style="height: 40px; width: 40px;" class="rounded-circle bg-white p-1 me-2">
+                <span class="fw-bold fs-5">FC Bayern Munich</span>
             </a>
+            <div class="d-flex align-items-center ms-auto">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <span class="navbar-text me-3 d-none d-md-block">
+                            Welcome, ${sessionScope.user.fullName}!
+                        </span>
+                        <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-light text-danger fw-semibold me-2">
+                            Logout
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-light text-danger fw-semibold me-2">
+                            Login
+                        </a>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
+    </header>
 
-        <table class="w-full border border-gray-300 rounded-lg text-left">
-            <thead class="bg-red-600 text-white">
-                <tr>
-                    <th class="py-2 px-3">Tiêu đề</th>
-                    <th class="py-2 px-3">Danh mục</th>
-                    <th class="py-2 px-3">Ngày tạo</th>
-                    <th class="py-2 px-3">Ảnh</th>
-                    <th class="py-2 px-3">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="a" items="${articleList}">
-                    <tr class="border-b hover:bg-gray-50 transition">
-  
-                        <td class="py-2 px-3 font-semibold text-gray-800">${a.title}</td>
-                        <td class="py-2 px-3 text-gray-700">${a.category}</td>
-                        <td class="py-2 px-3 text-gray-600">
-                            <fmt:formatDate value="${a.createdAt}" pattern="dd/MM/yyyy HH:mm" />
-                        </td>
-                        <td class="py-2 px-3">
-                            <img src="${a.imageUrl}" alt="${a.title}" class="h-12 w-12 object-cover rounded-md border">
-                        </td>
-                        <td class="py-2 px-3 space-x-3">
-                            <a href="AdminArticleServlet?action=edit&id=${a.articleID}" 
-                               class="text-blue-600 hover:underline">✏️ Sửa</a>
-                            <a href="AdminArticleServlet?action=delete&id=${a.articleID}" 
-                               class="text-red-600 hover:underline"
-                               onclick="return confirm('Xóa bài viết này?');">🗑️ Xóa</a>
-                        </td>
-                    </tr>
-                </c:forEach>
-
-                <c:if test="${empty articleList}">
-                    <tr><td colspan="6" class="text-center py-4 text-gray-600">Không có bài viết nào.</td></tr>
+    <%-- Nav (Giữ nguyên code của bạn) --%>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom sticky-top">
+        <div class="container-fluid">
+            <div class="navbar-nav">
+                <a class="nav-link" href="${pageContext.request.contextPath}/TeamServlet?action=list">👥 Teams</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/MatchServlet?action=list">⚽ Matches</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/articles">📰 News</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/shop">🛍️ Shop</a>
+                <c:if test="${sessionScope.user != null && sessionScope.user.role == 'ADMIN'}">
+                    <a class="nav-link active fw-bold text-danger" href="${pageContext.request.contextPath}/admin">⚙️ Admin Panel</a>
                 </c:if>
-            </tbody>
-        </table>
-
-        <div class="mt-6 text-center">
-            <a href="${pageContext.request.contextPath}/admin" class="text-gray-600 hover:underline">⬅ Quay lại Dashboard</a>
+            </div>
         </div>
-    </div>
+    </nav>
+
+    <%-- === NỘI DUNG CHÍNH (Đã chuyển sang Bootstrap) === --%>
+    <main class="container my-5">
+        <div class="row">
+            <div class="col-12">
+
+                <%-- Hàng tiêu đề và nút Thêm mới --%>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h4 fw-bold text-dark mb-0">📰 Quản lý bài viết</h2>
+                    <div>
+                        <a href="AdminArticleServlet?action=new" class="btn btn-success fw-semibold">
+                            ➕ Thêm bài viết
+                        </a>
+                        <a href="${pageContext.request.contextPath}/admin" class="btn btn-outline-danger ms-2">
+                            ⬅ Quay lại
+                        </a>
+                    </div>
+                </div>
+
+                <%-- Bảng quản lý --%>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-0">
+                        <div class="table-responsive rounded-3">
+                            <table class="table table-striped table-hover align-middle mb-0">
+                                <thead class="bg-danger text-white">
+                                    <tr>
+                                        <th class="px-3 py-3">Tiêu đề</th>
+                                        <th class="px-3 py-3">Danh mục</th>
+                                        <th class="px-3 py-3">Ngày tạo</th>
+                                        <th class="px-3 py-3">Ảnh</th>
+                                        <th class="px-3 py-3 text-end">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="a" items="${articleList}">
+                                        <tr>
+                                            <td class="px-3 py-3 fw-semibold">${a.title}</td>
+                                            <td class="px-3 py-3">${a.category}</td>
+                                            <td class="px-3 py-3">
+                                                <fmt:formatDate value="${a.createdAt}" pattern="dd/MM/yyyy HH:mm" />
+                                            </td>
+                                            <td class="px-3 py-3">
+                                                <%-- Dùng style để set kích thước ảnh, class của Bootstrap --%>
+                                                <img src="${pageContext.request.contextPath}/assets/${a.imageUrl}" alt="${a.title}" 
+                                                     class="rounded border" style="width: 60px; height: 40px; object-fit: cover;">
+                                            </td>
+                                            <td class="px-3 py-3 text-end">
+                                                <a href="AdminArticleServlet?action=edit&id=${a.articleID}" 
+                                                   class="btn btn-sm btn-outline-primary me-2">✏️ Sửa</a>
+                                                <a href="AdminArticleServlet?action=delete&id=${a.articleID}" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Xóa bài viết này?');">🗑️ Xóa</a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+
+                                    <c:if test="${empty articleList}">
+                                        <tr>
+                                            <td colspan="5" class="text-center p-4 text-muted">Không có bài viết nào.</td>
+                                        </tr>
+                                    </c:if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+    
+    <%-- Footer (Thêm vào cho đồng bộ) --%>
+    <footer class="text-center py-4 text-muted border-top mt-auto bg-white">
+        © 2025 Bayern Munich. All rights reserved.
+    </footer>
 
 </body>
 </html>

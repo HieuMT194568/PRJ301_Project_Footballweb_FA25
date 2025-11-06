@@ -76,7 +76,11 @@
             
             <div class="col-12">
                 <h2 class="h4 fw-bold text-dark mb-3">⚙️ Quản lý nội dung</h2>
-                <div class="row row-cols-1 row-cols-md-3 g-4">
+                <%-- 
+                  ĐÃ SỬA: Thay đổi 'row-cols-md-3' thành 'row-cols-sm-2 row-cols-lg-4' 
+                  để hiển thị 4 cột trên màn hình lớn (lg) và 2 cột trên màn hình nhỏ (sm)
+                --%>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
                     <div class="col">
                         <a href="${pageContext.request.contextPath}/MatchServlet?action=admin" class="card card-admin-link bg-primary text-white text-center shadow-sm">
                             <div class="card-body p-4">
@@ -98,6 +102,14 @@
                             </div>
                         </a>
                     </div>
+                    <div class="col">
+                        <a href="${pageContext.request.contextPath}/adminUser" class="card card-admin-link bg-warning text-dark text-center shadow-sm">
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-semibold">📰 Quản lý người dùng</h5>
+                            </div>
+                        </a>
+                    </div>        
+                            
                 </div>
             </div>
 

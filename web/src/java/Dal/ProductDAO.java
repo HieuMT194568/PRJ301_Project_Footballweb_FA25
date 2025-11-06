@@ -29,17 +29,31 @@ public class ProductDAO extends DBContext {
         return list;
     }
 
-    public void updateStockQuantity(int productId, int quantityBought) {
-        String sql = "UPDATE Products SET stockQuantity = stockQuantity - ? WHERE productID = ? AND stockQuantity >= ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql);) {
-            ps.setInt(1, quantityBought);
-            ps.setInt(2, productId);
-            ps.setInt(3, quantityBought);
-            ps.executeUpdate();
-        } catch (SQLException e) {  
-            e.printStackTrace();
-        }
+   public boolean updateStockQuantity(int productID, int quantityToDecrease, Connection conn) {
+    
+    // Câu lệnh SQL "thần kỳ"
+    // Chỉ UPDATE nếu (số lượng hiện tại - số lượng giảm) >= 0
+    String sql = "UPDATE Products SET " + 
+                 "stockQuantity = stockQuantity - ? " + 
+                 "WHERE ProductID = ? AND stockQuantity >= ?";
+    
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setInt(1, quantityToDecrease);
+        ps.setInt(2, productID);
+        ps.setInt(3, quantityToDecrease); // Điều kiện "stockQuantity >= quantityToDecrease"
+        
+        int rowsAffected = ps.executeUpdate();
+        
+        // Nếu rowsAffected > 0, nghĩa là update thành công (đủ hàng)
+        // Nếu rowsAffected == 0, nghĩa là update thất bại (không đủ hàng)
+        return rowsAffected > 0; 
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
     }
+}
 
     public void addProduct(Product p) {
         String sql = "INSERT INTO Products (ProductName, Description, Price, StockQuantity, ImageUrl, Category) VALUES (?,?,?,?,?,?)";
