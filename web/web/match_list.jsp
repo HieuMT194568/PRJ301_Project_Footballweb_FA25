@@ -101,5 +101,187 @@
         </div>
     </main>
     
-</body>
+    <style>
+        #chat-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #DC052D; /* Màu đỏ Bayern */
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000; /* Đảm bảo nổi lên trên */
+        }
+        #chat-window {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            flex-direction: column;
+            border: 1px solid #ddd;
+            z-index: 1000; /* Đảm bảo nổi lên trên */
+        }
+        #chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+        #chat-input-container {
+            border-top: 1px solid #ddd;
+            padding: 10px;
+            display: flex;
+        }
+        #chat-input {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+        }
+        #chat-send {
+            background: #DC052D;
+            color: white;
+            border: none;
+            padding: 0 12px;
+            margin-left: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-msg {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+        .chat-msg.user {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+        .chat-msg.bot {
+            background: #e9e9eb;
+            color: black;
+            margin-right: auto;
+        }
+    </style>
+
+    <div id="chat-bubble">🤖</div>
+
+    <div id="chat-window" style="display: none; flex-direction: column;">
+        <div style="background: #DC052D; color: white; padding: 10px; font-weight: bold; border-radius: 10px 10px 0 0;">
+            Trợ lý AI Bayern
+        </div>
+        <div id="chat-messages">
+            <div class="chat-msg bot">Xin chào! Tôi có thể giúp gì cho bạn về các trận đấu hoặc sản phẩm?</div>
+        </div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Hỏi tôi về trận đấu...">
+            <button id="chat-send">Gửi</button>
+        </div>
+    </div>
+
+    <script>
+        // Phải đặt code này trong một hàm để nó không xung đột
+        // khi bạn dán vào nhiều trang
+        function initializeBayernChatbot() {
+            const chatBubble = document.getElementById('chat-bubble');
+            const chatWindow = document.getElementById('chat-window');
+            const messagesContainer = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('chat-send');
+
+            // Kiểm tra xem các phần tử có tồn tại không
+            if (!chatBubble || !chatWindow || !chatInput || !sendButton) {
+                console.error("Lỗi Chatbot: Không tìm thấy các phần tử HTML.");
+                return; // Dừng lại nếu không tìm thấy
+            }
+
+            // Mở/đóng cửa sổ chat
+            chatBubble.addEventListener('click', () => {
+                const isHidden = chatWindow.style.display === 'none';
+                chatWindow.style.display = isHidden ? 'flex' : 'none';
+            });
+
+            // Gửi tin nhắn khi nhấn Enter
+            chatInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Gửi tin nhắn khi nhấn nút
+            sendButton.addEventListener('click', sendMessage);
+
+            async function sendMessage() {
+                const query = chatInput.value;
+                if (!query.trim()) return;
+
+                appendMessage(query, 'user');
+                chatInput.value = '';
+                sendButton.disabled = true; 
+                appendMessage("...", 'bot'); 
+
+                try {
+                    const response = await fetch('${pageContext.request.contextPath}/ai-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=UTF-8'
+                        },
+                        body: query
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Lỗi máy chủ: ' + response.status);
+                    }
+
+                    const data = await response.json();
+                    
+                    const loadingMsg = messagesContainer.querySelector('.chat-msg.bot:last-child');
+                    if (loadingMsg && loadingMsg.textContent === '...') {
+                        loadingMsg.remove();
+                    }
+
+                    appendMessage(data.reply, 'bot');
+
+                } catch (error) {
+                    console.error('Lỗi khi gọi AI:', error);
+                    
+                    const loadingMsg = messagesContainer.querySelector('.chat-msg.bot:last-child');
+                    if (loadingMsg && loadingMsg.textContent === '...') {
+                        loadingMsg.remove();
+                    }
+                    
+                    appendMessage('Xin lỗi, tôi không thể kết nối đến máy chủ AI.', 'bot');
+                } finally {
+                    sendButton.disabled = false; 
+                }
+            }
+
+            function appendMessage(text, type) {
+                if (!messagesContainer) return; // Kiểm tra an toàn
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('chat-msg', type);
+                msgDiv.textContent = text;
+                messagesContainer.appendChild(msgDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+        
+        // Chạy hàm khởi tạo chatbot
+        initializeBayernChatbot();
+    </script>
+    </body>
 </html>

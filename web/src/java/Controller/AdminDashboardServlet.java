@@ -32,7 +32,6 @@ public class AdminDashboardServlet extends HttpServlet {
             request.setAttribute("totalUsers", totalUsers);
             request.setAttribute("totalProducts", totalProducts);
             request.setAttribute("monthlyRevenue", monthlyRevenue);
-
             // Forward đến trang dashboard
             request.setAttribute("orderList", orderList);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/admin_dashboard.jsp");

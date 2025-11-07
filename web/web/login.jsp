@@ -13,8 +13,7 @@
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
 
-    <%-- Header (Giữ nguyên) --%>
-    <header class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm">
+   <header class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="${pageContext.request.contextPath}/articles">
                 <img src="${pageContext.request.contextPath}/assets/images/bayern-logo.png" alt="Logo" style="height: 40px; width: 40px;" class="rounded-circle bg-white p-1 me-2">
@@ -36,20 +35,27 @@
                         </a>
                     </c:otherwise>
                 </c:choose>
+                <a href="${pageContext.request.contextPath}/CartServlet?action=view" class="btn btn-light text-danger fw-semibold position-relative">
+                    🛒
+                    <c:if test="${not empty sessionScope.cart}">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                            ${sessionScope.cart.size()}
+                        </span>
+                    </c:if>
+                </a>
             </div>
         </div>
     </header>
 
-    <%-- Nav (Giữ nguyên) --%>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom sticky-top">
         <div class="container-fluid">
             <div class="navbar-nav">
                 <a class="nav-link" href="${pageContext.request.contextPath}/TeamServlet?action=list">👥 Teams</a>
                 <a class="nav-link" href="${pageContext.request.contextPath}/MatchServlet?action=list">⚽ Matches</a>
-                <a class="nav-link" href="${pageContext.request.contextPath}/articles">📰 News</a>
+                <a class="nav-link active fw-bold text-danger" href="${pageContext.request.contextPath}/articles">📰 News</a>
                 <a class="nav-link" href="${pageContext.request.contextPath}/shop">🛍️ Shop</a>
                 <c:if test="${sessionScope.user != null && sessionScope.user.role == 'ADMIN'}">
-                    <a class="nav-link active fw-bold text-danger" href="${pageContext.request.contextPath}/admin">⚙️ Admin Panel</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/admin">⚙️ Admin Panel</a>
                 </c:if>
             </div>
         </div>

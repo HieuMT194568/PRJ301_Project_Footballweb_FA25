@@ -33,8 +33,7 @@ public class LogoutServlet extends HttpServlet {
 
             if (user != null) {          
             }
-
-            session.invalidate();
+  session.removeAttribute("user");
         }
 
         response.sendRedirect("articles");

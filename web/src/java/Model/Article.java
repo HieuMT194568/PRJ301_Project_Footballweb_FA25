@@ -1,26 +1,41 @@
 package Model;
 
+import jakarta.persistence.*;
 import java.sql.Timestamp;
-import java.sql.Date;
+import org.hibernate.annotations.CreationTimestamp;
 
-/**
- * Lớp này đại diện cho một bài báo (Article) trong cơ sở dữ liệu.
- */
+@Entity
+@Table(name = "Articles") // Chỉ định tên bảng trong CSDL
 public class Article {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Tự động tăng ID
+    @Column(name = "ArticleID")
     private int articleID;
+
+    @Column(name = "Title")
     private String title;
+
+    @Column(name = "Description")
     private String description;
+
+    @Column(name = "ImageUrl")
     private String imageUrl;
+
+    @Column(name = "Category")
     private String category;
+
+    @Column(name = "Link")
     private String link;
+
+    @CreationTimestamp // Tự động gán thời gian khi tạo mới
+    @Column(name = "CreatedAt", updatable = false) // Không cho phép cập nhật
     private Timestamp createdAt;
 
-    // Constructor rỗng
+    // Constructors (rỗng và đầy đủ)
     public Article() {
     }
 
-    // Constructor đầy đủ tham số
     public Article(int articleID, String title, String description, String imageUrl, String category, String link, Timestamp createdAt) {
         this.articleID = articleID;
         this.title = title;
@@ -31,17 +46,9 @@ public class Article {
         this.createdAt = createdAt;
     }
 
-    // Constructor không có ID (dùng cho việc INSERT)
-    public Article(String title, String description, String imageUrl, String category, String link, Timestamp createdAt) {
-        this.title = title;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.category = category;
-        this.link = link;
-        this.createdAt = createdAt;
-    }
-
-    // Getters and Setters
+    // Getters and Setters...
+    // (Bắt buộc phải có để Spring/JPA/Thymeleaf hoạt động)
+    
     public int getArticleID() {
         return articleID;
     }
@@ -97,5 +104,4 @@ public class Article {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
-
 }

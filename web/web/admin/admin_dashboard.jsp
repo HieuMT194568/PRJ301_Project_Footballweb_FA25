@@ -53,7 +53,16 @@
                         </a>
                     </c:otherwise>
                 </c:choose>
+                <a href="${pageContext.request.contextPath}/CartServlet?action=view" class="btn btn-light text-danger fw-semibold position-relative">
+                    🛒
+                    <c:if test="${not empty sessionScope.cart}">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                            ${sessionScope.cart.size()}
+                        </span>
+                    </c:if>
+                </a>    
                 </div>
+                
         </div>
     </header>
 
@@ -165,7 +174,7 @@
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-light py-3">
-                        <h6 class="m-0 fw-bold text-dark">🧾 Danh sách đơn hàng mới nhất</h6>
+                        <h6 class="m-0 fw-bold text-dark">🧾 Danh sách đơn hàng gần nhất</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive rounded-3 border">
@@ -233,9 +242,9 @@
                 ${dataPoint}<c:if test="${!loop.last}">,</c:if>
             </c:forEach>
         ];
-        
-        const finalLabels = jstlLabels.length > 0 ? jstlLabels : ['1/11', '2/11', '3/11', '4/11', '5/11', '6/11', '7/11'];
-        const finalData = jstlData.length > 0 ? jstlData : [120000, 190000, 300000, 500000, 230000, 780000, 450000];
+          const finalLabels = jstlLabels.length > 0 ? jstlLabels : ['1/11', '2/11', '3/11', '4/11', '5/11', '6/11', '7/11'];
+        const finalData = jstlData.length > 0 ? jstlData : [0, 0, 0, 0, 0, 0, 1.800000];
+      
 
         const ctx = document.getElementById('revenueChart').getContext('2d');
         const revenueChart = new Chart(ctx, {

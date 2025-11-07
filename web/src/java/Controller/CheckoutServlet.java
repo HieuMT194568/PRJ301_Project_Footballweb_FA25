@@ -76,7 +76,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
 
         // Lấy connection từ DBContext
         // Giả sử DBContext của bạn có phương thức getConnection()
-        conn = new DBContext().getConnection(); 
+        conn = DBContext.getConnection(); 
         
         // === BẮT ĐẦU TRANSACTION ===
         conn.setAutoCommit(false);
@@ -86,7 +86,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         Order order = new Order();
         order.setUserID(user.getUserID()); // Lấy ID từ user thật
         order.setTotalAmount(totalAmount);
-        order.setStatus("Pending"); // Mới tạo nên là Pending
+        order.setStatus("PAID"); 
         
         // Sửa OrderDAO để nhận 'conn' và trả về OrderID
         int orderID = orderDAO.insertOrder(order, conn);
@@ -117,6 +117,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
 
             // 3c. TRỪ SỐ LƯỢNG TỒN KHO
             // Sửa ProductDAO để nhận 'conn'
+            
             productDAO.updateStockQuantity(item.getProduct().getProductID(), item.getQuantity(), conn);
         }
 
