@@ -75,47 +75,75 @@
                     <a class="nav-link" href="${pageContext.request.contextPath}/admin">⚙️ Admin Panel</a>
                 </c:if>
             </div>
-        </div>
+            
+            <form class="d-flex ms-auto" action="${pageContext.request.contextPath}/shop" method="get">
+                <input type="hidden" name="action" value="search">
+                <input class="form-control me-2" type="search" placeholder="Tìm kiếm sản phẩm..." 
+                       aria-label="Search" name="query" value="${param.query}">
+                <button class="btn btn-outline-danger" type="submit">Tìm</button>
+            </form>
+            </div>
     </nav>
 
     <main class="container my-5">
+        
+        <c:choose>
+            <c:when test="${not empty param.query}">
+                <h2 class="mb-4 text-dark">Kết quả tìm kiếm cho:${param.query}</h2>
+            </c:when>
+            <c:otherwise>
+                <h2 class="mb-4 text-dark">🛍️ Tất cả Sản phẩm</h2>
+            </c:otherwise>
+        </c:choose>
+        
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            <c:forEach var="p" items="${productList}">
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <img src="${pageContext.request.contextPath}/assets/${p.imageUrl}" class="card-img-top card-img-top-fixed" alt="${p.productName}">
-                        
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-dark text-truncate" title="${p.productName}">
-                                ${p.productName}
-                            </h5>
-                            <p class="card-text text-muted small">${p.category}</p>
-                            
-                            <p class="card-text fs-5 fw-semibold text-danger mb-2">
-                                <fmt:formatNumber value="${p.price}" pattern="#,##0" /> ₫
-                            </p>
+            <c:choose>
+                <c:when test="${not empty productList}">
+                    <c:forEach var="p" items="${productList}">
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                <img src="${pageContext.request.contextPath}/assets/${p.imageUrl}" class="card-img-top card-img-top-fixed" alt="${p.productName}">
+                                
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title fw-bold text-dark text-truncate" title="${p.productName}">
+                                        ${p.productName}
+                                    </h5>
+                                    <p class="card-text text-muted small">${p.category}</p>
+                                    
+                                    <p class="card-text fs-5 fw-semibold text-danger mb-2">
+                                        <fmt:formatNumber value="${p.price}" pattern="#,##0" /> ₫
+                                    </p>
 
-                            <div class="mt-auto">
-                                <c:choose>
-                                    <c:when test="${p.stockQuantity > 0}">
-                                        <p class="text-success small mb-2">Còn lại: ${p.stockQuantity}</p>
-                                        <a href="${pageContext.request.contextPath}/CartServlet?action=add&id=${p.productID}"
-                                           class="btn btn-danger w-100 fw-medium">
-                                            🛒 Thêm vào giỏ
-                                        </a>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <p class="text-danger small fw-semibold mb-2">❌ Hết hàng</p>
-                                        <button class="btn btn-secondary w-100" disabled>
-                                            Hết hàng
-                                        </button>
-                                    </c:otherwise>
-                                </c:choose>
+                                    <div class="mt-auto">
+                                        <c:choose>
+                                            <c:when test="${p.stockQuantity > 0}">
+                                                <p class="text-success small mb-2">Còn lại: ${p.stockQuantity}</p>
+                                                <a href="${pageContext.request.contextPath}/CartServlet?action=add&id=${p.productID}"
+                                                   class="btn btn-danger w-100 fw-medium">
+                                                    🛒 Thêm vào giỏ
+                                                </a>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <p class="text-danger small fw-semibold mb-2">❌ Hết hàng</p>
+                                                <button class="btn btn-secondary w-100" disabled>
+                                                    Hết hàng
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <div class="col-12">
+                        <div class="alert alert-warning text-center" role="alert">
+                            Không tìm thấy sản phẩm nào ${not empty param.query ? "phù hợp với từ khóa **\"" : ""}${not empty param.query ? param.query : ""}${not empty param.query ? "\"**" : ""}.
+                        </div>
                     </div>
-                </div>
-            </c:forEach>
+                </c:otherwise>
+            </c:choose>
         </div>
     </main>
 
@@ -253,8 +281,8 @@
 
                 appendMessage(query, 'user');
                 chatInput.value = '';
-                sendButton.disabled = true; 
-                appendMessage("...", 'bot'); 
+                sendButton.disabled = true;  
+                appendMessage("...", 'bot');  
 
                 try {
                     const response = await fetch('${pageContext.request.contextPath}/ai-chat', {
@@ -288,7 +316,7 @@
                     
                     appendMessage('Xin lỗi, tôi không thể kết nối đến máy chủ AI.', 'bot');
                 } finally {
-                    sendButton.disabled = false; 
+                    sendButton.disabled = false;  
                 }
             }
 

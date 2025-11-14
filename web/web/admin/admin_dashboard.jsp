@@ -160,16 +160,7 @@
                 </div>
             </div>
 
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-light py-3">
-                        <h6 class="m-0 fw-bold text-dark">📈 Doanh thu 7 ngày qua</h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
-            </div>
+
 
             <div class="col-12">
                 <div class="card shadow-sm">

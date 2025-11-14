@@ -1,5 +1,4 @@
 // Đặt tên file này là ShopServlet.java (trong package 'controller' hoặc 'servlet')
-
 package Controller; // Hoặc package servlet của bạn
 
 import Dal.ProductDAO; // Import DAO của bạn
@@ -12,49 +11,58 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // Đây là phần quan trọng: 
 // Nó báo cho máy chủ rằng Servlet này sẽ xử lý URL "/shop"
-@WebServlet(name = "ShopServlet", urlPatterns = {"/shop"}) 
+@WebServlet(name = "ShopServlet", urlPatterns = {"/shop"})
 public class ShopServlet extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
-        
-        // 1. Khởi tạo DAO
-        ProductDAO dao = new ProductDAO();
-        
-        // 2. Gọi hàm getAllProducts() từ DAO của bạn
-        List<Product> list = dao.getAllProducts();
-        
-        // 3. Đặt danh sách sản phẩm vào request
-        // Tên "productList" PHẢI TRÙNG với 'items' trong <c:forEach> của JSP
-        request.setAttribute("productList", list);
-        
-        // 4. Chuyển tiếp yêu cầu đến trang JSP để hiển thị
-        // (Thay "shop.jsp" bằng tên file JSP của bạn nếu khác)
-        request.getRequestDispatcher("shop.jsp").forward(request, response);
-    }
+    private ProductDAO productDAO = new ProductDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String action = request.getParameter("action");
+        String query = request.getParameter("query");
+
+        List<Product> productList = new ArrayList<>();
+
         try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ShopServlet.class.getName()).log(Level.SEVERE, null, ex);
+            if ("search".equalsIgnoreCase(action) && query != null && !query.trim().isEmpty()) {
+                String keyword = query.trim().toLowerCase();
+                List<Product> allProducts = productDAO.getAllProducts();
+
+                for (Product p : allProducts) {
+                    if (p.getProductName() != null
+                            && p.getProductName().toLowerCase().contains(keyword)) {
+                        productList.add(p);
+                    }
+                }
+
+                request.setAttribute("query", query); // giữ lại text trong ô input
+            } else {           
+                productList = productDAO.getAllProducts();
+    
+            }
+
+            request.setAttribute("productList", productList);
+            request.getRequestDispatcher("shop.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Lỗi khi tải danh sách sản phẩm: " + e.getMessage());
+            request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ShopServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ProductDAO dao = new ProductDAO();
+
     }
 }

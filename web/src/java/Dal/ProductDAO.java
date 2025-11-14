@@ -55,6 +55,47 @@ public class ProductDAO extends DBContext {
     }
 }
 
+   
+   public List<Product> searchProducts(String searchKeyword) {
+    List<Product> filteredList = new ArrayList<>();
+    
+    // Câu lệnh SQL: Lỗi có thể nằm ở đây nếu CSDL yêu cầu 'N'
+    // Tên cột Product Name có vẻ là NVARCHAR
+    String sql = "SELECT * FROM Products WHERE ProductName LIKE N?"; 
+    // HOẶC thử dùng tiền tố N (nếu JDBC không tự thêm)
+    
+    try (Connection conn = DBContext.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        String searchPattern = "%" + searchKeyword + "%";
+        
+        stmt.setString(1, searchPattern);
+        
+       try (ResultSet rs = stmt.executeQuery()) {
+    // Bắt đầu lặp qua từng hàng (row) kết quả trả về từ CSDL
+    while (rs.next()) {
+                filteredList.add(new Product(
+                        rs.getInt("ProductID"),
+                        rs.getString("ProductName"),
+                        rs.getString("Description"),
+                        rs.getDouble("Price"),
+                        rs.getInt("StockQuantity"),
+                        rs.getString("ImageUrl"),
+                        rs.getString("Category")
+                ));
+            }
+    // OPTIONAL: In ra số lượng sản phẩm tìm được để kiểm tra
+    System.out.println("Tìm thấy " + filteredList.size() + " sản phẩm."); 
+    
+}
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // 🚨 In ra lỗi tại đây để kiểm tra thêm
+        System.err.println("SQL Error during search: " + e.getMessage());
+    }
+    return filteredList;
+}
+   
     public void addProduct(Product p) {
         String sql = "INSERT INTO Products (ProductName, Description, Price, StockQuantity, ImageUrl, Category) VALUES (?,?,?,?,?,?)";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
